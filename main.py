@@ -121,6 +121,11 @@ class Sonar:
         # Uncomment these lines to graph the samples. Useful for debugging.
         # matplotlib.pyplot.plot(self.samples)
         # matplotlib.pyplot.show()
+        self.pinged = 0
+        maxsample = max(self.samples)
+        if (maxsample > 0.9):
+            self.pinged = 1
+
 
     def correlate(self):
 
@@ -158,22 +163,31 @@ class Sonar:
         largest = 0
         peak2 = -1
         for c in range(len(self.result)):
-            if (self.result[c] > largest and c>300):
+
+            if (self.result[c] > largest and c>770 and c<820):
+#            if (self.result[c] > largest and c>400):
                 largest = self.result[c]
+#                peak2 = c
                 peak2 = c//2
+
         return peak2
 
+def countX(lst, x):
+    count = 0
+    for ele in lst:
+        if (ele == x):
+            count = count + 1
+    return count
 
-
-DistanceFt = 4
+DistanceFt = 4.6
 DistanceSoundTravelsFt = DistanceFt * 2
 DistanceSoundTravels = DistanceSoundTravelsFt * 0.3048
 
-#Loop 1000 times
+#Loop 100 times
 
 OutList = []
 RecordedResult = []
-for n in range(10):
+for n in range(60):
   # Send and Recieve a ping
   sonar = Sonar()
   sonar.ping()
@@ -196,11 +210,11 @@ for n in range(10):
   RecordedResult.append(DistanceSoundTravels)
   RecordedResult.append(TimeInSeconds)
   RecordedResult.append(SpeedOfSound)
-  if (SpeedOfSound>330 and SpeedOfSound<350):
+  if (sonar.pinged == 1):
       OutList.append(RecordedResult)
 
-  time.sleep(0.5)
+  time.sleep(0.25)
 
 print("Distance Time Speed:")
 for n in range(len(OutList)):
-    print(n, " ", OutList[0][0], " ", OutList[0][1], " ", OutList[0][2])
+  print(n, " ", OutList[n][0], " ", OutList[n][1], " ", OutList[n][2])
